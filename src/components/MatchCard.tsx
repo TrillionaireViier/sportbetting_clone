@@ -4,6 +4,7 @@ import React from "react";
 import { Match } from "@/lib/mockData";
 import { useBetSlip } from "@/context/BetSlipContext";
 import { Clock, Tv } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface MatchCardProps {
   match: Match;
@@ -13,7 +14,11 @@ export default function MatchCard({ match }: MatchCardProps) {
   const { selectedBets, addBet } = useBetSlip();
 
   return (
-    <div className="bg-[#151b2b] rounded-xl border border-[#1e2638] overflow-hidden hover:border-[#334155] transition-all group">
+    <motion.div 
+      whileHover={{ scale: 1.02 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className="bg-[#151b2b] rounded-xl border border-[#1e2638] overflow-hidden hover:border-[#334155] transition-colors group"
+    >
       {/* Match Header */}
       <div className="bg-[#0b0f19] px-4 py-3 border-b border-[#1e2638] flex justify-between items-center">
         <div className="flex items-center gap-3">
@@ -98,6 +103,6 @@ export default function MatchCard({ match }: MatchCardProps) {
           </div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }

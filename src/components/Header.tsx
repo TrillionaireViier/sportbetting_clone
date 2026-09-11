@@ -1,5 +1,6 @@
 import React from "react";
 import { Search, Bell, User } from "lucide-react";
+import Link from "next/link";
 
 export default function Header() {
   return (
@@ -19,6 +20,9 @@ export default function Header() {
       </div>
 
       <div className="flex items-center gap-6">
+        <Link href="/admin" className="text-xs font-bold text-[#ff007f] border border-[#ff007f] px-3 py-1 rounded-full hover:bg-[#ff007f] hover:text-white transition-colors">
+          ADMIN
+        </Link>
         <div className="flex items-center gap-2">
           <span className="text-[#94a3b8] text-sm">Balance:</span>
           <span className="text-[#39ff14] font-bold">€ 1,240.50</span>

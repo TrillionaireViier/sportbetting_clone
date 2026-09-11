@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useBetSlip } from "@/context/BetSlipContext";
 import { X, Trash2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function BetSlip() {
   const { selectedBets, removeBet, clearBets, totalOdds } = useBetSlip();
@@ -28,27 +29,40 @@ export default function BetSlip() {
 
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {selectedBets.length === 0 ? (
-          <div className="text-center text-[#64748b] mt-10">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center text-[#64748b] mt-10"
+          >
             <p className="text-sm">Your bet slip is empty.</p>
             <p className="text-xs mt-1">Please make a selection to place a bet.</p>
-          </div>
+          </motion.div>
         ) : (
-          selectedBets.map((bet) => (
-            <div key={bet.oddsId} className="bg-[#0b0f19] rounded-lg p-3 border border-[#1e2638] relative group">
-              <button
-                onClick={() => removeBet(bet.oddsId)}
-                className="absolute top-2 right-2 text-[#64748b] hover:text-[#ff007f] opacity-0 group-hover:opacity-100 transition-all"
+          <AnimatePresence>
+            {selectedBets.map((bet) => (
+              <motion.div 
+                key={bet.oddsId}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20, scale: 0.9 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                className="bg-[#0b0f19] rounded-lg p-3 border border-[#1e2638] relative group"
               >
-                <X className="w-4 h-4" />
-              </button>
-              <p className="text-xs text-[#94a3b8] font-semibold mb-1">{bet.marketName}</p>
-              <div className="flex justify-between items-center">
-                <span className="text-white text-sm font-medium">{bet.oddsName}</span>
-                <span className="text-[#39ff14] font-bold">{bet.oddsValue.toFixed(2)}</span>
-              </div>
-              <p className="text-xs text-[#64748b] mt-2 truncate pr-4">{bet.matchName}</p>
-            </div>
-          ))
+                <button
+                  onClick={() => removeBet(bet.oddsId)}
+                  className="absolute top-2 right-2 text-[#64748b] hover:text-[#ff007f] opacity-0 group-hover:opacity-100 transition-all"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+                <p className="text-xs text-[#94a3b8] font-semibold mb-1">{bet.marketName}</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-white text-sm font-medium">{bet.oddsName}</span>
+                  <span className="text-[#39ff14] font-bold">{bet.oddsValue.toFixed(2)}</span>
+                </div>
+                <p className="text-xs text-[#64748b] mt-2 truncate pr-4">{bet.matchName}</p>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         )}
       </div>
 

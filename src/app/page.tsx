@@ -1,11 +1,15 @@
+"use client";
+
 import React from "react";
 import MatchCard from "@/components/MatchCard";
-import { mockMatches } from "@/lib/mockData";
+import { useData } from "@/context/DataContext";
 import { Activity } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Home() {
-  const liveMatches = mockMatches.filter(m => m.isLive);
-  const upcomingMatches = mockMatches.filter(m => !m.isLive);
+  const { matches } = useData();
+  const liveMatches = matches.filter(m => m.isLive);
+  const upcomingMatches = matches.filter(m => !m.isLive);
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
@@ -31,21 +35,31 @@ export default function Home() {
           <Activity className="text-[#ff007f] w-5 h-5 animate-pulse" />
           <h3 className="text-xl font-bold text-white uppercase tracking-wide">Live Right Now</h3>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, staggerChildren: 0.1 }}
+        >
           {liveMatches.map((match) => (
             <MatchCard key={match.id} match={match} />
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* Upcoming Matches Section */}
       <section>
         <h3 className="text-xl font-bold text-white uppercase tracking-wide mb-4">Upcoming Matches</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2, staggerChildren: 0.1 }}
+        >
           {upcomingMatches.map((match) => (
             <MatchCard key={match.id} match={match} />
           ))}
-        </div>
+        </motion.div>
       </section>
     </div>
   );
