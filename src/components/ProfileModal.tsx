@@ -12,20 +12,6 @@ interface ProfileModalProps {
 
 export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const { balance, depositFunds, betHistory } = useData();
-  const [depositAmount, setDepositAmount] = useState<string>("");
-  const [showSuccess, setShowSuccess] = useState(false);
-
-  const handleDeposit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const amount = parseFloat(depositAmount);
-    if (!isNaN(amount) && amount > 0) {
-      depositFunds(amount);
-      setDepositAmount("");
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
-    }
-  };
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -80,50 +66,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 </div>
               </div>
 
-              {/* Crypto Deposit Section */}
-              <div className="p-6 border-t border-[#1e2638]">
-                <h4 className="font-bold text-white mb-4 flex items-center gap-2">
-                  <Bitcoin className="w-5 h-5 text-[#f7931a]" />
-                  Crypto Deposit
-                </h4>
-                <form onSubmit={handleDeposit} className="space-y-4">
-                  <div>
-                    <label className="block text-xs text-[#94a3b8] mb-1">Amount to Deposit (USDT/EUR)</label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748b]">€</span>
-                      <input
-                        type="number"
-                        min="1"
-                        step="0.01"
-                        value={depositAmount}
-                        onChange={(e) => setDepositAmount(e.target.value)}
-                        placeholder="0.00"
-                        className="w-full bg-[#0b0f19] border border-[#1e2638] text-white pl-8 pr-4 py-3 rounded-lg focus:outline-none focus:border-[#39ff14] transition-colors"
-                        required
-                      />
-                    </div>
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full bg-[#39ff14] text-[#0b0f19] font-bold py-3 rounded-lg hover:bg-[#32e011] transition-transform active:scale-95"
-                  >
-                    Deposit Crypto
-                  </button>
-                  
-                  <AnimatePresence>
-                    {showSuccess && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="text-[#39ff14] text-sm text-center font-bold mt-2"
-                      >
-                        Deposit successful!
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </form>
-              </div>
+
 
               {/* My Bets History Section */}
               <div className="p-6 border-t border-[#1e2638] bg-[#0b0f19]">

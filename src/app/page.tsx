@@ -3,31 +3,40 @@
 import React from "react";
 import MatchCard from "@/components/MatchCard";
 import { useData } from "@/context/DataContext";
+import { useState } from "react";
+import DepositModal from "@/components/DepositModal";
 import { Activity } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Home() {
   const { matches } = useData();
-  const liveMatches = matches.filter(m => m.isLive);
-  const upcomingMatches = matches.filter(m => !m.isLive);
+  const [showDeposit, setShowDeposit] = useState(false);
+  const liveMatches = matches.filter((m) => m.isLive);
+  const upcomingMatches = matches.filter((m) => !m.isLive);
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
-      {/* Hero Banner */}
-      <div className="bg-gradient-to-r from-[#151b2b] to-[#0b0f19] border border-[#1e2638] rounded-2xl p-8 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-[#39ff14] opacity-5 rounded-full blur-3xl transform translate-x-1/3 -translate-y-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#00f3ff] opacity-5 rounded-full blur-3xl transform -translate-x-1/3 translate-y-1/3"></div>
-        
-        <h2 className="text-3xl font-bold text-white mb-2 relative z-10">
-          Welcome to <span className="text-[#39ff14]">BetSport</span>
-        </h2>
-        <p className="text-[#94a3b8] max-w-lg mb-6 relative z-10">
-          Get the best odds on live and upcoming matches. Experience seamless betting with instant updates and premium features.
-        </p>
-        <button className="bg-[#39ff14] hover:bg-[#32e011] text-[#0b0f19] font-bold py-2.5 px-6 rounded-lg transition-transform transform hover:scale-105 shadow-[0_0_15px_rgba(57,255,20,0.3)] relative z-10">
+      {/* Premium Hero Banner */}
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="bg-gradient-to-r from-[#1e2638] via-[#151b2b] to-[#0b0f19] border border-[#334155] rounded-2xl p-8 relative overflow-hidden flex flex-col md:flex-row items-center justify-between"
+      >
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        <div className="relative z-10 max-w-lg mb-6 md:mb-0">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-2 leading-tight">
+            Seamless betting with <span className="text-[#39ff14]">instant updates</span> and premium features.
+          </h2>
+          <p className="text-[#94a3b8] text-sm">Experience the thrill of live sports with instant deposits and dynamic odds.</p>
+        </div>
+        <button 
+          onClick={() => setShowDeposit(true)}
+          className="relative z-10 bg-[#39ff14] hover:bg-[#32e011] text-[#0b0f19] font-bold px-8 py-4 rounded-xl uppercase tracking-widest transition-all transform hover:scale-105 shadow-[0_0_20px_rgba(57,255,20,0.4)] whitespace-nowrap"
+        >
           Deposit Now
         </button>
-      </div>
+      </motion.section>
 
       {/* Live Matches Section */}
       <section>
@@ -61,6 +70,8 @@ export default function Home() {
           ))}
         </motion.div>
       </section>
+
+      <DepositModal isOpen={showDeposit} onClose={() => setShowDeposit(false)} />
     </div>
   );
 }

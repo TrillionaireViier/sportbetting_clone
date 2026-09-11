@@ -6,11 +6,13 @@ import Link from "next/link";
 import { useData } from "@/context/DataContext";
 import { AnimatePresence, motion } from "framer-motion";
 import ProfileModal from "@/components/ProfileModal";
+import DepositModal from "@/components/DepositModal";
 
 export default function Header() {
   const { notifications, clearNotifications, balance } = useData();
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [showDeposit, setShowDeposit] = useState(false);
 
   return (
     <header className="h-16 bg-[#151b2b] border-b border-[#1e2638] flex items-center justify-between px-6 sticky top-0 z-50">
@@ -35,8 +37,16 @@ export default function Header() {
           ADMIN
         </Link>
         <div className="flex items-center gap-2">
-          <span className="text-[#94a3b8] text-sm">Balance:</span>
-          <span className="text-[#39ff14] font-bold">€ {balance.toFixed(2)}</span>
+          <div className="flex items-center gap-2 bg-[#1e2638] px-3 py-1.5 rounded-lg border border-[#334155]">
+            <span className="text-[#94a3b8] text-sm">Balance:</span>
+            <span className="text-[#39ff14] font-bold">€ {balance.toFixed(2)}</span>
+          </div>
+          <button 
+            onClick={() => setShowDeposit(true)}
+            className="bg-[#39ff14] hover:bg-[#32e011] text-[#0b0f19] font-bold px-3 py-1.5 rounded-lg text-sm transition-colors uppercase tracking-wider"
+          >
+            Deposit
+          </button>
         </div>
         <div className="relative">
           <button 
@@ -94,6 +104,7 @@ export default function Header() {
       </div>
 
       <ProfileModal isOpen={showProfile} onClose={() => setShowProfile(false)} />
+      <DepositModal isOpen={showDeposit} onClose={() => setShowDeposit(false)} />
     </header>
   );
 }
