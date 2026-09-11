@@ -4,10 +4,36 @@ import React, { useState } from "react";
 import { useBetSlip } from "@/context/BetSlipContext";
 import { X, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useData } from "@/context/DataContext";
 
 export default function BetSlip() {
   const { selectedBets, removeBet, clearBets, totalOdds } = useBetSlip();
+  const { placeBet, balance } = useData();
   const [stake, setStake] = useState<number | "">("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
+
+  const handlePlaceBet = () => {
+    if (!stake || stake <= 0) {
+      setError("Please enter a valid stake");
+      return;
+    }
+    if (stake > balance) {
+      setError("Insufficient balance");
+      return;
+    }
+
+    const success = placeBet(stake, totalOdds, selectedBets);
+    if (success) {
+      setSuccess(true);
+      setError("");
+      setTimeout(() => {
+        setSuccess(false);
+        clearBets();
+        setStake("");
+      }, 2000);
+    }
+  };
 
   const potentialWin = typeof stake === "number" ? (stake * totalOdds).toFixed(2) : "0.00";
 
@@ -90,8 +116,25 @@ export default function BetSlip() {
             <span className="text-[#39ff14] font-bold text-lg">€ {potentialWin}</span>
           </div>
 
-          <button className="w-full bg-[#39ff14] hover:bg-[#32e011] text-[#0b0f19] font-bold py-3 rounded-lg uppercase tracking-wide transition-colors transform hover:scale-[1.02] active:scale-95 shadow-[0_0_15px_rgba(57,255,20,0.3)]">
-            Place Bet
+          <AnimatePresence>
+            {error && (
+              <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-[#ff007f] text-xs font-bold mb-3 text-center">
+                {error}
+              </motion.div>
+            )}
+            {success && (
+              <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="text-[#39ff14] text-xs font-bold mb-3 text-center">
+                Bet Placed Successfully!
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <button 
+            onClick={handlePlaceBet}
+            disabled={success}
+            className="w-full bg-[#39ff14] hover:bg-[#32e011] text-[#0b0f19] font-bold py-3 rounded-lg uppercase tracking-wide transition-colors transform hover:scale-[1.02] active:scale-95 shadow-[0_0_15px_rgba(57,255,20,0.3)] disabled:opacity-50"
+          >
+            {success ? "Success!" : "Place Bet"}
           </button>
         </div>
       )}

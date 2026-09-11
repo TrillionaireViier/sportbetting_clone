@@ -9,6 +9,15 @@ export interface Notification {
   time: string;
 }
 
+export interface BetRecord {
+  id: string;
+  date: string;
+  stake: number;
+  totalOdds: number;
+  potentialWin: number;
+  selections: { matchName: string; marketName: string; oddsName: string; oddsValue: number }[];
+}
+
 interface DataContextProps {
   matches: Match[];
   updateMatchScore: (matchId: string, newScore: string) => void;
@@ -19,6 +28,8 @@ interface DataContextProps {
   clearNotifications: () => void;
   balance: number;
   depositFunds: (amount: number) => void;
+  betHistory: BetRecord[];
+  placeBet: (stake: number, totalOdds: number, selections: BetRecord["selections"]) => boolean;
 }
 
 const DataContext = createContext<DataContextProps | undefined>(undefined);
@@ -27,9 +38,26 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [matches, setMatches] = useState<Match[]>(mockMatches);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [balance, setBalance] = useState<number>(1240.50);
+  const [betHistory, setBetHistory] = useState<BetRecord[]>([]);
 
   const depositFunds = (amount: number) => {
     setBalance(prev => prev + amount);
+  };
+
+  const placeBet = (stake: number, totalOdds: number, selections: BetRecord["selections"]): boolean => {
+    if (balance < stake) return false;
+    
+    setBalance(prev => prev - stake);
+    const newBet: BetRecord = {
+      id: Date.now().toString(),
+      date: new Date().toLocaleString(),
+      stake,
+      totalOdds,
+      potentialWin: stake * totalOdds,
+      selections
+    };
+    setBetHistory(prev => [newBet, ...prev]);
+    return true;
   };
 
   const addNotification = (message: string) => {
@@ -87,7 +115,9 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       addNotification,
       clearNotifications,
       balance,
-      depositFunds
+      depositFunds,
+      betHistory,
+      placeBet
     }}>
       {children}
     </DataContext.Provider>

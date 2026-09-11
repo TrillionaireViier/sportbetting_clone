@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Bitcoin, User, History, Wallet } from "lucide-react";
+import { X, Bitcoin, User, History, Wallet, Receipt } from "lucide-react";
 import { useData } from "@/context/DataContext";
 
 interface ProfileModalProps {
@@ -11,7 +11,7 @@ interface ProfileModalProps {
 }
 
 export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
-  const { balance, depositFunds } = useData();
+  const { balance, depositFunds, betHistory } = useData();
   const [depositAmount, setDepositAmount] = useState<string>("");
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -42,7 +42,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-[#151b2b] border border-[#1e2638] rounded-2xl w-full max-w-md overflow-hidden shadow-2xl relative"
+              className="bg-[#151b2b] border border-[#1e2638] rounded-2xl w-full max-w-md max-h-[90vh] overflow-y-auto shadow-2xl relative custom-scrollbar"
             >
               <button
                 onClick={onClose}
@@ -76,7 +76,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                     <History className="w-4 h-4" />
                     <span className="text-xs font-semibold">Total Bets</span>
                   </div>
-                  <p className="text-xl font-bold text-white">124</p>
+                  <p className="text-xl font-bold text-white">{betHistory.length}</p>
                 </div>
               </div>
 
@@ -116,7 +116,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="text-[#39ff14] text-sm text-center font-bold"
+                        className="text-[#39ff14] text-sm text-center font-bold mt-2"
                       >
                         Deposit successful!
                       </motion.div>
@@ -124,6 +124,54 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                   </AnimatePresence>
                 </form>
               </div>
+
+              {/* My Bets History Section */}
+              <div className="p-6 border-t border-[#1e2638] bg-[#0b0f19]">
+                <h4 className="font-bold text-white mb-4 flex items-center gap-2">
+                  <Receipt className="w-5 h-5 text-[#ff007f]" />
+                  My Bets
+                </h4>
+                <div className="space-y-4">
+                  {betHistory.length === 0 ? (
+                    <p className="text-[#64748b] text-sm text-center py-4">No bets placed yet.</p>
+                  ) : (
+                    betHistory.map((bet) => (
+                      <div key={bet.id} className="bg-[#151b2b] rounded-xl border border-[#1e2638] p-4">
+                        <div className="flex justify-between items-center mb-3 border-b border-[#1e2638] pb-3">
+                          <span className="text-xs text-[#64748b]">{bet.date}</span>
+                          <span className="text-xs font-bold text-white bg-[#1e2638] px-2 py-1 rounded">
+                            {bet.selections.length > 1 ? "Accumulator" : "Single"}
+                          </span>
+                        </div>
+                        
+                        <div className="space-y-3 mb-4">
+                          {bet.selections.map((sel, idx) => (
+                            <div key={idx} className="flex justify-between items-start text-sm">
+                              <div>
+                                <p className="text-white font-medium">{sel.matchName}</p>
+                                <p className="text-xs text-[#94a3b8]">{sel.marketName} - {sel.oddsName}</p>
+                              </div>
+                              <span className="text-[#39ff14] font-bold">{sel.oddsValue.toFixed(2)}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="bg-[#0b0f19] rounded-lg p-3 flex justify-between items-center">
+                          <div>
+                            <p className="text-xs text-[#64748b]">Total Stake</p>
+                            <p className="text-sm font-bold text-white">€ {bet.stake.toFixed(2)}</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs text-[#64748b]">Potential Win</p>
+                            <p className="text-sm font-bold text-[#39ff14]">€ {bet.potentialWin.toFixed(2)}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
             </motion.div>
           </motion.div>
         </>
