@@ -3,17 +3,36 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { mockMatches, Match } from "@/lib/mockData";
 
+export interface Notification {
+  id: string;
+  message: string;
+  time: string;
+}
+
 interface DataContextProps {
   matches: Match[];
   updateMatchScore: (matchId: string, newScore: string) => void;
   toggleMatchLive: (matchId: string) => void;
   updateOdds: (matchId: string, marketId: string, oddsId: string, newValue: number) => void;
+  notifications: Notification[];
+  addNotification: (message: string) => void;
+  clearNotifications: () => void;
 }
 
 const DataContext = createContext<DataContextProps | undefined>(undefined);
 
 export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [matches, setMatches] = useState<Match[]>(mockMatches);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
+  const addNotification = (message: string) => {
+    setNotifications(prev => [
+      { id: Date.now().toString(), message, time: new Date().toLocaleTimeString() },
+      ...prev
+    ]);
+  };
+
+  const clearNotifications = () => setNotifications([]);
 
   const updateMatchScore = (matchId: string, newScore: string) => {
     setMatches((prev) =>
@@ -52,7 +71,15 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <DataContext.Provider value={{ matches, updateMatchScore, toggleMatchLive, updateOdds }}>
+    <DataContext.Provider value={{ 
+      matches, 
+      updateMatchScore, 
+      toggleMatchLive, 
+      updateOdds,
+      notifications,
+      addNotification,
+      clearNotifications
+    }}>
       {children}
     </DataContext.Provider>
   );

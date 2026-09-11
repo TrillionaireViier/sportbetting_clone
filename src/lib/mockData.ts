@@ -23,7 +23,27 @@ export interface Match {
   markets: Market[];
 }
 
+const standard1X2Market = (id: string, o1: number, oX: number, o2: number): Market => ({
+  id: `mk1X2_${id}`,
+  name: "1X2",
+  odds: [
+    { id: `o1_${id}`, name: "1", value: o1 },
+    { id: `oX_${id}`, name: "X", value: oX },
+    { id: `o2_${id}`, name: "2", value: o2 },
+  ],
+});
+
+const standardOUMarket = (id: string, over: number, under: number): Market => ({
+  id: `mkOU_${id}`,
+  name: "Over/Under 2.5",
+  odds: [
+    { id: `oO_${id}`, name: "Over", value: over },
+    { id: `oU_${id}`, name: "Under", value: under },
+  ],
+});
+
 export const mockMatches: Match[] = [
+  // Football - Live
   {
     id: "m1",
     sport: "Football",
@@ -33,25 +53,88 @@ export const mockMatches: Match[] = [
     isLive: true,
     score: "2 - 1",
     markets: [
-      {
-        id: "mk1",
-        name: "1X2",
-        odds: [
-          { id: "o1", name: "1", value: 1.45 },
-          { id: "o2", name: "X", value: 3.50 },
-          { id: "o3", name: "2", value: 5.20 },
-        ],
-      },
-      {
-        id: "mk2",
-        name: "Over/Under 3.5",
-        odds: [
-          { id: "o4", name: "Over", value: 1.85 },
-          { id: "o5", name: "Under", value: 1.95 },
-        ],
-      },
+      standard1X2Market("m1", 1.45, 3.50, 5.20),
+      standardOUMarket("m1", 1.85, 1.95),
     ],
   },
+  {
+    id: "m5",
+    sport: "Football",
+    homeTeam: "Arsenal",
+    awayTeam: "Chelsea",
+    startTime: "45'",
+    isLive: true,
+    score: "0 - 0",
+    markets: [
+      standard1X2Market("m5", 2.10, 3.10, 3.80),
+      standardOUMarket("m5", 2.05, 1.75),
+    ],
+  },
+  {
+    id: "m6",
+    sport: "Football",
+    homeTeam: "Bayern Munich",
+    awayTeam: "Dortmund",
+    startTime: "12'",
+    isLive: true,
+    score: "1 - 0",
+    markets: [
+      standard1X2Market("m6", 1.30, 4.50, 7.20),
+      standardOUMarket("m6", 1.50, 2.50),
+    ],
+  },
+
+  // Football - Upcoming
+  {
+    id: "m7",
+    sport: "Football",
+    homeTeam: "Barcelona",
+    awayTeam: "Atletico Madrid",
+    startTime: "Tomorrow, 21:00",
+    isLive: false,
+    markets: [
+      standard1X2Market("m7", 1.95, 3.40, 4.10),
+      standardOUMarket("m7", 1.90, 1.90),
+    ],
+  },
+  {
+    id: "m8",
+    sport: "Football",
+    homeTeam: "PSG",
+    awayTeam: "Marseille",
+    startTime: "Tomorrow, 20:45",
+    isLive: false,
+    markets: [
+      standard1X2Market("m8", 1.55, 4.20, 5.50),
+      standardOUMarket("m8", 1.65, 2.20),
+    ],
+  },
+  {
+    id: "m9",
+    sport: "Football",
+    homeTeam: "Juventus",
+    awayTeam: "AC Milan",
+    startTime: "Sunday, 18:30",
+    isLive: false,
+    markets: [
+      standard1X2Market("m9", 2.40, 3.10, 3.00),
+      standardOUMarket("m9", 2.10, 1.70),
+    ],
+  },
+  {
+    id: "m10",
+    sport: "Football",
+    homeTeam: "Liverpool",
+    awayTeam: "Manchester Utd",
+    startTime: "Sunday, 17:30",
+    isLive: false,
+    markets: [
+      standard1X2Market("m10", 1.75, 3.80, 4.50),
+      standardOUMarket("m10", 1.75, 2.05),
+    ],
+  },
+
+  // Basketball
   {
     id: "m2",
     sport: "Basketball",
@@ -72,6 +155,26 @@ export const mockMatches: Match[] = [
     ],
   },
   {
+    id: "m11",
+    sport: "Basketball",
+    homeTeam: "Boston Celtics",
+    awayTeam: "Miami Heat",
+    startTime: "Tomorrow, 02:30",
+    isLive: false,
+    markets: [
+      {
+        id: "mk11",
+        name: "Moneyline",
+        odds: [
+          { id: "o11a", name: "BOS", value: 1.45 },
+          { id: "o11b", name: "MIA", value: 2.80 },
+        ],
+      },
+    ],
+  },
+
+  // Tennis
+  {
     id: "m3",
     sport: "Tennis",
     homeTeam: "C. Alcaraz",
@@ -89,6 +192,8 @@ export const mockMatches: Match[] = [
       },
     ],
   },
+
+  // Esports
   {
     id: "m4",
     sport: "Esports",

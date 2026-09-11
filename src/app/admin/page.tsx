@@ -5,20 +5,50 @@ import { useData } from "@/context/DataContext";
 import { motion } from "framer-motion";
 
 export default function AdminPage() {
-  const { matches, updateMatchScore, toggleMatchLive, updateOdds } = useData();
+  const { matches, updateMatchScore, toggleMatchLive, updateOdds, addNotification } = useData();
   const [editingScore, setEditingScore] = useState<{ id: string; score: string } | null>(null);
+  const [notificationMsg, setNotificationMsg] = useState("");
+
+  const handleBroadcast = () => {
+    if (notificationMsg.trim()) {
+      addNotification(notificationMsg);
+      setNotificationMsg("");
+    }
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="max-w-5xl mx-auto"
+      className="max-w-5xl mx-auto space-y-6"
     >
+      <div className="bg-[#151b2b] p-6 rounded-xl border border-[#1e2638] shadow-lg">
+        <h2 className="text-xl font-bold text-white mb-4 uppercase tracking-wider flex items-center gap-2">
+          <span className="bg-[#39ff14] w-2 h-6 rounded-sm"></span>
+          Broadcast Notification
+        </h2>
+        <div className="flex gap-4">
+          <input
+            type="text"
+            value={notificationMsg}
+            onChange={(e) => setNotificationMsg(e.target.value)}
+            placeholder="Enter notification message..."
+            className="flex-1 bg-[#0b0f19] border border-[#1e2638] text-white px-4 py-2 rounded-lg focus:outline-none focus:border-[#39ff14] transition-colors"
+          />
+          <button
+            onClick={handleBroadcast}
+            className="bg-[#39ff14] text-[#0b0f19] px-6 py-2 rounded-lg font-bold hover:bg-[#32e011] transition-colors"
+          >
+            SEND
+          </button>
+        </div>
+      </div>
+
       <div className="bg-[#151b2b] p-6 rounded-xl border border-[#1e2638] shadow-lg">
         <h2 className="text-2xl font-bold text-white mb-6 uppercase tracking-wider flex items-center gap-3">
           <span className="bg-[#ff007f] w-3 h-8 rounded-sm"></span>
-          Admin Dashboard
+          Manage Matches
         </h2>
         
         <div className="space-y-8">

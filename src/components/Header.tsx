@@ -1,14 +1,23 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { Search, Bell, User } from "lucide-react";
 import Link from "next/link";
+import { useData } from "@/context/DataContext";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function Header() {
+  const { notifications, clearNotifications } = useData();
+  const [showNotifications, setShowNotifications] = useState(false);
+
   return (
-    <header className="h-16 bg-[#151b2b] border-b border-[#1e2638] flex items-center justify-between px-6 sticky top-0 z-10">
+    <header className="h-16 bg-[#151b2b] border-b border-[#1e2638] flex items-center justify-between px-6 sticky top-0 z-50">
       <div className="flex items-center gap-4">
-        <h1 className="text-xl font-bold uppercase tracking-wider text-white">
-          Bet<span className="text-[#39ff14]">Sport</span>
-        </h1>
+        <Link href="/">
+          <h1 className="text-xl font-bold uppercase tracking-wider text-white">
+            Bet<span className="text-[#39ff14]">Sport</span>
+          </h1>
+        </Link>
         <div className="relative hidden md:block ml-8">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748b] w-4 h-4" />
           <input
@@ -27,10 +36,53 @@ export default function Header() {
           <span className="text-[#94a3b8] text-sm">Balance:</span>
           <span className="text-[#39ff14] font-bold">€ 1,240.50</span>
         </div>
-        <button className="text-[#94a3b8] hover:text-white transition-colors relative">
-          <Bell className="w-5 h-5" />
-          <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#ff007f] rounded-full border border-[#151b2b]"></span>
-        </button>
+        <div className="relative">
+          <button 
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="text-[#94a3b8] hover:text-white transition-colors relative block"
+          >
+            <Bell className="w-5 h-5" />
+            {notifications.length > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-3 w-3 items-center justify-center rounded-full bg-[#ff007f] text-[8px] font-bold text-white">
+                {notifications.length}
+              </span>
+            )}
+          </button>
+          
+          <AnimatePresence>
+            {showNotifications && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                className="absolute right-0 mt-4 w-72 bg-[#151b2b] border border-[#1e2638] rounded-xl shadow-2xl overflow-hidden z-50"
+              >
+                <div className="p-3 border-b border-[#1e2638] flex justify-between items-center bg-[#0b0f19]">
+                  <h4 className="text-sm font-bold text-white">Notifications</h4>
+                  {notifications.length > 0 && (
+                    <button onClick={clearNotifications} className="text-xs text-[#64748b] hover:text-[#ff007f]">
+                      Clear All
+                    </button>
+                  )}
+                </div>
+                <div className="max-h-64 overflow-y-auto">
+                  {notifications.length === 0 ? (
+                    <div className="p-6 text-center text-[#64748b] text-sm">
+                      No new notifications
+                    </div>
+                  ) : (
+                    notifications.map((n) => (
+                      <div key={n.id} className="p-3 border-b border-[#1e2638] last:border-0 hover:bg-[#1e2638] transition-colors">
+                        <p className="text-xs text-white mb-1">{n.message}</p>
+                        <p className="text-[10px] text-[#64748b]">{n.time}</p>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
         <button className="bg-[#1e2638] hover:bg-[#334155] p-2 rounded-full transition-colors text-white">
           <User className="w-5 h-5" />
         </button>
