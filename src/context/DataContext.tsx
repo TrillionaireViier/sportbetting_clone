@@ -17,6 +17,8 @@ interface DataContextProps {
   notifications: Notification[];
   addNotification: (message: string) => void;
   clearNotifications: () => void;
+  balance: number;
+  depositFunds: (amount: number) => void;
 }
 
 const DataContext = createContext<DataContextProps | undefined>(undefined);
@@ -24,6 +26,11 @@ const DataContext = createContext<DataContextProps | undefined>(undefined);
 export const DataProvider = ({ children }: { children: ReactNode }) => {
   const [matches, setMatches] = useState<Match[]>(mockMatches);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [balance, setBalance] = useState<number>(1240.50);
+
+  const depositFunds = (amount: number) => {
+    setBalance(prev => prev + amount);
+  };
 
   const addNotification = (message: string) => {
     setNotifications(prev => [
@@ -78,7 +85,9 @@ export const DataProvider = ({ children }: { children: ReactNode }) => {
       updateOdds,
       notifications,
       addNotification,
-      clearNotifications
+      clearNotifications,
+      balance,
+      depositFunds
     }}>
       {children}
     </DataContext.Provider>

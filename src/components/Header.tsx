@@ -5,10 +5,12 @@ import { Search, Bell, User } from "lucide-react";
 import Link from "next/link";
 import { useData } from "@/context/DataContext";
 import { AnimatePresence, motion } from "framer-motion";
+import ProfileModal from "@/components/ProfileModal";
 
 export default function Header() {
-  const { notifications, clearNotifications } = useData();
+  const { notifications, clearNotifications, balance } = useData();
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   return (
     <header className="h-16 bg-[#151b2b] border-b border-[#1e2638] flex items-center justify-between px-6 sticky top-0 z-50">
@@ -34,7 +36,7 @@ export default function Header() {
         </Link>
         <div className="flex items-center gap-2">
           <span className="text-[#94a3b8] text-sm">Balance:</span>
-          <span className="text-[#39ff14] font-bold">€ 1,240.50</span>
+          <span className="text-[#39ff14] font-bold">€ {balance.toFixed(2)}</span>
         </div>
         <div className="relative">
           <button 
@@ -83,10 +85,15 @@ export default function Header() {
             )}
           </AnimatePresence>
         </div>
-        <button className="bg-[#1e2638] hover:bg-[#334155] p-2 rounded-full transition-colors text-white">
+        <button 
+          onClick={() => setShowProfile(true)}
+          className="bg-[#1e2638] hover:bg-[#334155] p-2 rounded-full transition-colors text-white"
+        >
           <User className="w-5 h-5" />
         </button>
       </div>
+
+      <ProfileModal isOpen={showProfile} onClose={() => setShowProfile(false)} />
     </header>
   );
 }
